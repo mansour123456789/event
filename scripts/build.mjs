@@ -1,12 +1,15 @@
 /**
  * build.mjs — Wrapper pour `next build` sur Vercel.
  *
- * Problème : Next.js 15 exécute "Collecting build traces" même avec
- * `output: 'export'`. Cette étape est inutile pour un export statique
- * (les fichiers dans out/ sont déjà complets) et se bloque indéfiniment.
+ * Problème : Next.js 15 se bloque à "Collecting build traces" sur Vercel
+ * free tier (manque de mémoire pour analyser node_modules).
  *
- * Solution : on laisse next build générer les pages statiques, puis
- * on l'arrête dès que "Collecting build traces" commence.
+ * Solution : on laisse next build générer tout le contenu dans .next/
+ * (ce qui est complet avant que les traces commencent), puis on arrête
+ * proprement le processus dès que le blocage commence.
+ *
+ * Vercel fait ensuite SON PROPRE tracing (~168ms) sur .next/ — il n'a
+ * pas besoin du tracing interne de next build.
  */
 
 import { spawn } from "node:child_process";
@@ -16,7 +19,7 @@ const nextBin = isWin
   ? "node_modules\\.bin\\next.cmd"
   : "node_modules/.bin/next";
 
-console.log("▲ Build wrapper — Next.js static export");
+console.log("▲ Build wrapper — démarrage de next build...");
 
 const child = spawn(nextBin, ["build"], {
   stdio: ["inherit", "pipe", "pipe"],
@@ -29,27 +32,24 @@ function scheduleKill() {
   if (killScheduled) return;
   killScheduled = true;
 
-  // Les fichiers out/ sont déjà écrits à ce stade.
-  // On attend 5 secondes par sécurité puis on arrête le processus.
+  // .next/ est entièrement écrit avant cette étape.
+  // On attend 30s pour être sûr que toutes les écritures disque sont
+  // terminées, puis on arrête le processus (Vercel fera son propre tracing).
   console.log(
-    "\n✅ Pages statiques générées. Arrêt du build traces dans 5s..."
+    "\n[wrapper] .next/ complet. Arrêt dans 30s (Vercel trace indépendamment)..."
   );
 
   setTimeout(() => {
-    console.log(
-      "⚡ Arrêt de 'Collecting build traces' (inutile pour static export)"
-    );
+    console.log("[wrapper] Arrêt de next build — .next/ prêt pour Vercel.");
     child.kill("SIGTERM");
-    // Laisse le temps à next de nettoyer proprement
     setTimeout(() => process.exit(0), 3000);
-  }, 5000);
+  }, 30_000);
 }
 
 child.stdout.on("data", (chunk) => {
   const text = chunk.toString();
   process.stdout.write(text);
 
-  // Déclenche l'arrêt dès que la collecte de traces commence
   if (text.includes("Collecting build traces")) {
     scheduleKill();
   }
@@ -61,8 +61,9 @@ child.stderr.on("data", (chunk) => {
 
 child.on("exit", (code, signal) => {
   if (signal === "SIGTERM" || killScheduled) {
-    console.log("✅ Build terminé avec succès (export statique prêt).");
+    console.log("✅ Build wrapper terminé — .next/ prêt pour déploiement.");
     process.exit(0);
   }
   process.exit(code ?? 1);
 });
+
