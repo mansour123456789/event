@@ -1,0 +1,16 @@
+{
+  "name": "atr-seminaire-2026",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 5500",
+    "build": "next build",
+    "start": "next start -p 5500",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.4",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  }
+}

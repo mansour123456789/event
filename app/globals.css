@@ -1,0 +1,2859 @@
+/* ==========================================================================
+   ATR — Séminaire International 2026
+   Design tokens repris de la charte atr.org.tn
+   ========================================================================== */
+
+:root {
+  /* Bleu et or relevés directement sur le logo (#105090 et #c08010). */
+  --blue: #10529a;
+  --blue-soft: #2d6cb5;
+  --navy: #102b4e;
+  --navy-deep: #0f2a4a;
+  --navy-night: #0a1c33;
+  --navy-dark: #0a1628;
+  --gold: #c07b1b;
+  --gold-light: #d99a3d;
+  --gold-line: #e3a441;
+  --light: #f3f6f9;
+  --line: #e2e8f0;
+  --line-dark: rgba(255, 255, 255, 0.14);
+  --muted: #6e6e6e;
+  --muted-light: rgba(255, 255, 255, 0.72);
+  --white: #fff;
+
+  --radius: 3px;
+  --container: 1100px;
+  --header-h: 86px;
+
+  --font-display: var(--font-dm-sans), "DM Sans", sans-serif;
+  --font-body: var(--font-inter), Inter, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--gold-line);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* --------------------------------------------------------- shared bits --- */
+/*
+  Pas d'encadrés : l'information est séparée par du blanc et des filets, comme
+  dans un document technique. Les titres portent l'identité des sections, sans
+  sur-titre.
+*/
+
+.band {
+  padding: 118px 0;
+}
+
+.band--light {
+  background: var(--light);
+}
+
+/* Chapeau de section : titre à gauche, texte d'accroche à droite. */
+
+.lede {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 24px 64px;
+  align-items: start;
+  padding-bottom: 60px;
+}
+
+.lede__title {
+  font-size: clamp(34px, 4.6vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  max-width: 16ch;
+  margin: 0;
+}
+
+.lede__body p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 54ch;
+}
+
+.lede__body .link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.link-arrow {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.link-arrow:hover {
+  color: var(--gold);
+}
+
+/* ------------------------------------------------- révélation au scroll --- */
+/*
+  Le même geste que le héros : la page se « peint » de gauche à droite. Piloté
+  par le défilement, donc par le visiteur, et non par une minuterie. L'état
+  par défaut est l'état final : sans scroll-timeline, ou si le visiteur refuse
+  le mouvement, tout est visible.
+*/
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: revealWipe linear both;
+      animation-timeline: view();
+      animation-range: entry 12% entry 64%;
+    }
+
+    .rise > * {
+      animation: revealRise linear both;
+      animation-timeline: view();
+    }
+
+    .rise > *:nth-child(1) {
+      animation-range: entry 8% entry 48%;
+    }
+    .rise > *:nth-child(2) {
+      animation-range: entry 12% entry 54%;
+    }
+    .rise > *:nth-child(3) {
+      animation-range: entry 16% entry 60%;
+    }
+    .rise > *:nth-child(4) {
+      animation-range: entry 20% entry 66%;
+    }
+    .rise > *:nth-child(5) {
+      animation-range: entry 24% entry 72%;
+    }
+  }
+}
+
+@keyframes revealWipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 -0.4em 0 0);
+  }
+}
+
+@keyframes revealRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Colonnes séparées par un filet, sans cadre. */
+
+.split {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.split__col {
+  position: relative;
+  padding-block: 34px 0;
+  padding-inline: 0 40px;
+  border-inline-start: 1px solid var(--line);
+}
+
+/* Au survol, le filet doré se trace — le geste de la page. */
+.split__col::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.split__col:hover::before {
+  transform: scaleX(1);
+}
+
+.split__col:first-child {
+  border-inline-start: 0;
+}
+
+.split__col:not(:first-child) {
+  padding-inline-start: 40px;
+}
+
+.split__col h3 {
+  font-size: 21px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.split__col p {
+  margin: 14px 0 0;
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 34ch;
+}
+
+/* --------------------------------------------------------- partenaires --- */
+/*
+  Les logos sont dessinés pour un fond clair : la section est blanche, ils se
+  posent donc directement, sans réserve. Hauteur commune, largeur libre —
+  chaque marque garde ses proportions.
+*/
+
+.partners {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+}
+
+.partner {
+  padding-block: 36px 0;
+  padding-inline: 0 40px;
+  border-inline-start: 1px solid var(--line);
+}
+
+.partner:first-child {
+  border-inline-start: 0;
+}
+
+.partner:not(:first-child) {
+  padding-inline-start: 40px;
+}
+
+.partner__mark {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  margin-bottom: 24px;
+}
+
+/* Hauteur définie plutôt que max-height : le ratio des attributs réserve la
+   place avant le chargement, donc aucun décalage de mise en page. */
+.partner__mark img {
+  height: 72px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Le logo de l'ATR est carré : à hauteur égale il pèse moins que les autres. */
+.partner:first-child .partner__mark img {
+  height: 84px;
+  margin: -6px 0;
+}
+
+.partner h3 {
+  font-size: 18px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.partner p {
+  margin: 12px 0 0;
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 32ch;
+}
+
+.partner__link {
+  display: block;
+}
+
+.partner__link .partner__mark img {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.partner__link:hover .partner__mark img {
+  transform: translateY(-3px);
+}
+
+.partner__link:hover h3 {
+  color: var(--blue);
+}
+
+/* ------------------------------------------------------------- buttons --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 24px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--white);
+}
+
+.btn--gold:hover {
+  background: #a96a14;
+}
+
+.btn--ghost-light {
+  border-color: rgba(255, 255, 255, 0.38);
+  color: var(--white);
+}
+
+.btn--ghost-light:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--white);
+}
+
+.btn--ghost-dark {
+  border-color: var(--line);
+  color: var(--navy);
+  background: var(--white);
+}
+
+.btn--ghost-dark:hover {
+  border-color: var(--navy);
+}
+
+.btn--sm {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+/* -------------------------------------------------------------- header --- */
+/*
+  Transparent au-dessus du héros, opaque dès qu'on descend. Le fil doré au
+  bas de la barre indique la progression dans la page : c'est un repère utile
+  sur un site d'une seule page, pas une décoration.
+*/
+
+.header__sentinel {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.28s ease, border-color 0.28s ease;
+}
+
+.header--pinned {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom-color: var(--line);
+}
+
+.header__inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header__plate {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  padding: 5px;
+  background: var(--white);
+  border-radius: var(--radius);
+}
+
+.header__plate img {
+  width: 100%;
+  height: auto;
+}
+
+.header__brand-text strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  transition: color 0.28s ease;
+}
+
+.header__brand-text span {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--gold-line);
+}
+
+.header--pinned .header__brand-text strong {
+  color: var(--navy);
+}
+
+.header--pinned .header__brand-text span {
+  color: var(--gold);
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: auto;
+  font-size: 15px;
+}
+
+.header__nav a {
+  position: relative;
+  padding: 9px 13px;
+  border-radius: var(--radius);
+  color: rgba(255, 255, 255, 0.78);
+  transition: color 0.2s ease;
+}
+
+.header__nav a:hover {
+  color: var(--white);
+}
+
+.header--pinned .header__nav a {
+  color: var(--muted);
+}
+
+.header--pinned .header__nav a:hover {
+  color: var(--navy);
+}
+
+/* Le repère de section courante : un trait sous le lien actif. */
+.header__nav a::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold-line);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.header__nav a.is-active {
+  color: var(--white);
+}
+
+.header--pinned .header__nav a.is-active {
+  color: var(--navy);
+}
+
+.header__nav a.is-active::after {
+  transform: scaleX(1);
+}
+
+.header__cta {
+  flex: none;
+}
+
+.header__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 100%;
+  background: var(--gold-line);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+@supports (animation-timeline: scroll()) {
+  .header__progress {
+    animation: progressGrow linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes progressGrow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.header__burger {
+  display: none;
+  margin-inline-start: auto;
+  width: 46px;
+  height: 46px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius);
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+
+.header--pinned .header__burger {
+  border-color: var(--line);
+}
+
+.header__burger span,
+.header__burger span::before,
+.header__burger span::after {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 2px;
+  background: var(--white);
+  content: "";
+  transition: background 0.28s ease;
+}
+
+.header--pinned .header__burger span,
+.header--pinned .header__burger span::before,
+.header--pinned .header__burger span::after {
+  background: var(--navy);
+}
+
+.header__burger span {
+  top: 22px;
+}
+
+.header__burger span::before {
+  left: 0;
+  top: -6px;
+}
+
+.header__burger span::after {
+  left: 0;
+  top: 6px;
+}
+
+/* Menu plein écran : sur mobile, une page de navigation plutôt qu'un tiroir. */
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--header-h) + 28px) 24px 40px;
+  background: var(--navy);
+  color: var(--white);
+}
+
+.sheet--open {
+  display: flex;
+}
+
+.sheet__nav {
+  display: grid;
+  gap: 2px;
+}
+
+.sheet__nav a {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 7vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.sheet__foot .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.sheet__foot p {
+  margin: 20px 0 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--muted-light);
+}
+
+/* ------------------------------------------------------- sélecteur de langue --- */
+/*
+  Chaque langue est un vrai lien vers /fr, /en ou /ar : rendu côté serveur,
+  URL partageable, pas de clignotement. Le menu n'est qu'un confort.
+*/
+
+.langues {
+  position: relative;
+  flex: none;
+}
+
+.langues__bouton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 10px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.langues__bouton:hover {
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.header--pinned .langues__bouton {
+  color: var(--muted);
+}
+
+.header--pinned .langues__bouton:hover {
+  color: var(--navy);
+  border-color: var(--line);
+}
+
+.langues__drapeau {
+  width: 22px;
+  height: auto;
+  flex: none;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.16);
+}
+
+.langues__chevron {
+  width: 10px;
+  height: auto;
+  opacity: 0.7;
+}
+
+.langues__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-end: 0;
+  min-width: 178px;
+  padding: 6px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 14px 34px rgba(10, 28, 51, 0.16);
+  z-index: 70;
+}
+
+.langues__choix {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius);
+  font-size: 14.5px;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.langues__choix:hover {
+  background: var(--light);
+}
+
+.langues__choix.is-on {
+  font-weight: 700;
+  background: var(--light);
+}
+
+/* Variante du menu plein écran : les trois langues à plat. */
+
+.langues--liste {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.langues__titre {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-line);
+}
+
+.langues__rangee {
+  display: grid;
+  gap: 6px;
+}
+
+.langues--liste .langues__choix {
+  color: var(--white);
+  border: 1px solid var(--line-dark);
+  padding: 12px 14px;
+}
+
+.langues--liste .langues__choix:hover,
+.langues--liste .langues__choix.is-on {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ---------------------------------------------------------------- hero --- */
+
+.hero {
+  position: relative;
+  background: var(--navy);
+  color: var(--white);
+  overflow: hidden;
+  /* l'en-tête est fixe et transparent : le héros passe dessous */
+  padding: calc(var(--header-h) + 54px) 0 0;
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* Le drapeau tunisien en fond, du côté où il n'y a pas de texte. */
+
+.hero__flag {
+  position: absolute;
+  z-index: 1;
+  right: -3%;
+  top: 14%;
+  width: min(48vw, 640px);
+  height: auto;
+  /* en soft-light, le rouge teinte la photo au lieu de la recouvrir ; le
+     masque radial est centré sur le croissant, pour qu'aucun bord du
+     rectangle ne vienne couper le texte */
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 24%,
+    rgba(0, 0, 0, 0.5) 44%,
+    transparent 68%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 24%,
+    rgba(0, 0, 0, 0.5) 44%,
+    transparent 68%
+  );
+}
+
+/* Logo de l'association et drapeau du pays hôte, en tête du héros. */
+
+.hero__lockup {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+/* Les trois logos sont dessinés pour un fond clair : ils partagent une seule
+   réserve blanche, ce qui en fait un vrai cartouche d'événement au lieu de
+   trois vignettes posées sur le bleu. */
+.hero__marks {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 11px 20px;
+  background: var(--white);
+  border-radius: 4px;
+}
+
+.hero__marks img {
+  height: 44px;
+  width: auto;
+}
+
+/* Le logo de l'ATR est carré : à hauteur égale il pèse moins que les autres. */
+.hero__marks .hero__mark-atr {
+  height: 56px;
+  margin: -6px 0;
+}
+
+.hero__rule {
+  width: 1px;
+  height: 46px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.hero__chip {
+  width: 44px;
+  height: auto;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.hero__org {
+  margin: 0 0 30px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.66);
+  max-width: 62ch;
+}
+
+/* La chaussée : photo pleine largeur, ligne de rive, chiffres clés. */
+
+.hero__road {
+  position: relative;
+  z-index: 2;
+  margin-top: 62px;
+  min-height: 210px;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 56px;
+}
+
+.hero__road > .container {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+/* La photo couvre tout le héros ; le texte tient sur un voile bleu nuit. */
+
+.hero__photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero__photo img {
+  object-fit: cover;
+  object-position: 62% 50%;
+}
+
+.hero__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to right,
+      rgba(16, 43, 78, 0.97) 0%,
+      rgba(16, 43, 78, 0.9) 34%,
+      rgba(10, 28, 51, 0.6) 66%,
+      rgba(10, 28, 51, 0.7) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(10, 28, 51, 0.62) 0%,
+      rgba(10, 28, 51, 0.16) 34%,
+      rgba(8, 22, 40, 0.8) 100%
+    );
+}
+
+.hero__lane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+  z-index: 1;
+  overflow: hidden;
+  transform-origin: left center;
+}
+
+.hero__lane::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -128px;
+  right: -128px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--gold-line) 0 76px,
+    transparent 76px 128px
+  );
+}
+
+.hero h1 {
+  color: var(--white);
+  font-size: clamp(40px, 6.7vw, 84px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  max-width: 15ch;
+}
+
+.hero h1 mark {
+  background: var(--gold);
+  color: var(--white);
+  padding: 0 14px 4px;
+  border-radius: var(--radius);
+}
+
+.hero__tagline {
+  margin: 26px 0 0;
+  padding-inline-start: 16px;
+  border-inline-start: 3px solid var(--gold);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 34ch;
+}
+
+.hero__lead {
+  margin: 30px 0 0;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--muted-light);
+  max-width: 54ch;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 38px;
+}
+
+.hero__facts {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+}
+
+.hero__fact {
+  padding: 0 26px;
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+.hero__fact:first-child {
+  border-inline-start: 0;
+  padding-inline-start: 0;
+}
+
+.hero__fact strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.hero__fact span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ------------------------------------------------- hero : mise en scène --- */
+/*
+  Un seul geste : le héros se « peint » de gauche à droite, comme un marquage
+  que l'on trace. Le titre s'ouvre, la ligne de rive suit et poursuit sa
+  course. L'état final est l'état par défaut ; l'animation ne s'ajoute que si
+  le visiteur accepte le mouvement.
+*/
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__org {
+    animation: heroRise 500ms ease-out 200ms both;
+  }
+
+  .hero h1 {
+    animation: heroWipe 950ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
+  }
+
+  .hero__tagline {
+    animation: heroRise 500ms ease-out 900ms both;
+  }
+
+  .hero__lead {
+    animation: heroRise 500ms ease-out 1000ms both;
+  }
+
+  .hero__actions {
+    animation: heroRise 500ms ease-out 1100ms both;
+  }
+
+  .hero__lane {
+    animation: heroDraw 1100ms cubic-bezier(0.22, 1, 0.36, 1) 620ms both;
+  }
+
+  .hero__lane::before {
+    animation: laneTravel 5200ms linear 1720ms infinite both;
+  }
+
+  .hero__facts {
+    animation: heroRise 600ms ease-out 1250ms both;
+  }
+}
+
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes heroWipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 -0.4em 0 0);
+  }
+}
+
+@keyframes heroDraw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes laneTravel {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(128px);
+  }
+}
+
+/* --------------------------------------------------------------- strip --- */
+
+.strip {
+  background: var(--light);
+  border-bottom: 1px solid var(--line);
+}
+
+.strip__inner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 18px 0;
+  font-size: 14px;
+}
+
+.strip__label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.strip__link {
+  margin-inline-start: auto;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.strip__link:hover {
+  color: var(--gold);
+}
+
+/* ----------------------------------------------------------- countdown --- */
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line-dark);
+}
+
+.countdown__cell {
+  padding-block: 22px 0;
+  padding-inline: 0 20px;
+  border-inline-start: 1px solid var(--line-dark);
+}
+
+.countdown__cell:first-child {
+  border-inline-start: 0;
+}
+
+.countdown__cell:not(:first-child) {
+  padding-inline-start: 20px;
+}
+
+.countdown__cell strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown__cell span {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ------------------------------------- système sûr : la coupe en 3D --- */
+/*
+  La défense en profondeur est un concept littéralement stratifié : on la
+  dessine donc comme les ingénieurs dessinent une structure de chaussée, en
+  vue éclatée. Les couches s'écartent à mesure que la section entre dans
+  l'écran. La légende porte le contenu ; la coupe est une illustration.
+*/
+
+.couches {
+  background: var(--navy-night);
+  color: var(--muted-light);
+  padding: 118px 0;
+  overflow: hidden;
+}
+
+.couches__grid {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.couches__title {
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(32px, 4.3vw, 54px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  max-width: 17ch;
+}
+
+.couches__lead {
+  margin: 24px 0 0;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--muted-light);
+  max-width: 50ch;
+}
+
+.couches__list {
+  list-style: none;
+  margin: 46px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line-dark);
+}
+
+.couches__item {
+  padding-block: 18px;
+  padding-inline: 20px 0;
+  border-bottom: 1px solid var(--line-dark);
+  border-inline-start: 3px solid var(--tone);
+  transition: background 0.2s ease;
+}
+
+.couches__item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.couches__item h3 {
+  margin: 0;
+  color: var(--white);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.couches__item p {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.66);
+  max-width: 46ch;
+}
+
+.couches__item--routes {
+  --tone: #2c5a94;
+}
+.couches__item--vitesses {
+  --tone: #24507f;
+}
+.couches__item--vehicules {
+  --tone: #1c436c;
+}
+.couches__item--secours {
+  --tone: #163659;
+}
+
+/* La coupe elle-même. */
+
+.stack {
+  --slab-w: 320px;
+  --slab-d: 224px;
+  --slab-t: 16px;
+  --sep: 62px;
+  display: grid;
+  place-items: center;
+  min-height: 470px;
+  perspective: 1250px;
+  perspective-origin: 50% 46%;
+}
+
+.stack__rig {
+  position: relative;
+  width: var(--slab-w);
+  height: var(--slab-d);
+  transform-style: preserve-3d;
+  transform: rotateX(56deg) rotateZ(-40deg);
+}
+
+.slab {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--i) * var(--sep) * -1));
+  background-color: var(--top);
+}
+
+/* Les deux faces visibles, extrudées vers le bas. */
+
+.slab::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: var(--slab-t);
+  background: var(--front);
+  transform-origin: top center;
+  transform: rotateX(-90deg);
+}
+
+.slab::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: var(--slab-t);
+  height: 100%;
+  background: var(--side);
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+
+/* La couche de surface porte le marquage, comme dans le héros. */
+
+.slab--routes {
+  --top: #22497c;
+  --front: #17375e;
+  --side: #123052;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--gold-line) 0 26px,
+    transparent 26px 52px
+  );
+  background-size: 100% 4px;
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+}
+
+.slab--vitesses {
+  --top: #1d4171;
+  --front: #143053;
+  --side: #0f2a48;
+}
+
+.slab--vehicules {
+  --top: #183a66;
+  --front: #112a4a;
+  --side: #0d2440;
+}
+
+.slab--secours {
+  --top: #143154;
+  --front: #0e233d;
+  --side: #0a1d35;
+}
+
+/* Survoler une couche de la légende la désigne dans la coupe. */
+
+.couches:has(.couches__item--routes:hover) .slab--routes,
+.couches:has(.couches__item--vitesses:hover) .slab--vitesses,
+.couches:has(.couches__item--vehicules:hover) .slab--vehicules,
+.couches:has(.couches__item--secours:hover) .slab--secours {
+  box-shadow: inset 0 0 0 2px var(--gold-line);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .slab {
+      animation: slabExplode linear both;
+      animation-timeline: view();
+      animation-range: entry 12% cover 42%;
+    }
+  }
+}
+
+@keyframes slabExplode {
+  from {
+    transform: translateZ(calc(var(--i) * -3px));
+  }
+  to {
+    transform: translateZ(calc(var(--i) * var(--sep) * -1));
+  }
+}
+
+/* ------------------------------------------- programme : index de rangs --- */
+
+.index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.index__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 0.95fr) minmax(0, 1.1fr);
+  gap: 30px;
+  align-items: start;
+  padding: 30px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.index__row::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.index__row:hover::after {
+  transform: scaleX(1);
+}
+
+.index__icon {
+  color: var(--gold);
+  margin-top: 3px;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.index__row:hover .index__icon {
+  transform: translateX(4px);
+}
+
+.index__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.index__name {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.index__note {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 48ch;
+}
+
+/* ---------------------------------------------------------------- infos --- */
+
+.infos {
+  display: grid;
+  grid-template-columns: 1fr 0.58fr;
+  gap: 72px;
+  align-items: start;
+}
+
+.infos > figure {
+  position: sticky;
+  top: calc(var(--header-h) + 32px);
+}
+
+.facts {
+  margin: 44px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.facts__row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.facts dt {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.facts dd strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--navy);
+}
+
+.facts dd span {
+  font-size: 15px;
+}
+
+.poster {
+  margin: 0;
+}
+
+.poster img {
+  border-radius: var(--radius);
+}
+
+.poster figcaption {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ----------------------------------------------------------------- lieu --- */
+
+.lieu {
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.lieu__grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 72px;
+  align-items: center;
+}
+
+.lieu__text {
+  margin: 24px 0 0;
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 52ch;
+}
+
+.lieu__grid .link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+/* Sans photo déposée, la colonne image disparaît : le texte se répartit sur
+   deux colonnes pour occuper la largeur, et le dessin des monuments porte
+   la section. */
+.lieu__grid--seul {
+  grid-template-columns: 1fr;
+}
+
+.lieu__grid--seul > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 64px;
+  align-items: start;
+}
+
+.lieu__grid--seul h2,
+.lieu__grid--seul .link-arrow {
+  grid-column: 1 / -1;
+}
+
+.lieu__grid--seul .lieu__text {
+  max-width: 44ch;
+}
+
+.lieu__photo {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  aspect-ratio: 3 / 4;
+}
+
+.lieu__photo img {
+  object-fit: cover;
+}
+
+/* Bande photo pleine largeur de la colonne de texte. */
+
+.bande {
+  position: relative;
+  margin: 0 0 56px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  aspect-ratio: 16 / 9;
+}
+
+.bande--large {
+  margin: 56px 0 0;
+  aspect-ratio: 3 / 1.2;
+}
+
+/* Bande de clôture de la section « Le lieu ». */
+.bande--bas {
+  margin: 64px 0 0;
+  aspect-ratio: 16 / 7;
+}
+
+.bande img {
+  object-fit: cover;
+}
+
+.bande figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 44px 24px 18px;
+  font-size: 14px;
+  color: var(--white);
+  background: linear-gradient(to top, rgba(8, 22, 40, 0.82), transparent);
+}
+
+/* Crédit photo : obligation des licences Creative Commons. Discret, mais
+   toujours lisible et cliquable. */
+
+.credit {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.credit a:hover {
+  color: var(--white);
+}
+
+/* Sur la photo verticale, le crédit se pose en bas de l'image. */
+.lieu__photo .credit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 26px 12px 8px;
+  background: linear-gradient(to top, rgba(8, 22, 40, 0.78), transparent);
+}
+
+/* Léger travelling : les photos dérivent pendant que la section traverse
+   l'écran. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lieu__photo img,
+    .bande img {
+      animation: slowPan linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+@keyframes slowPan {
+  from {
+    transform: translateY(-3.5%) scale(1.08);
+  }
+  to {
+    transform: translateY(3.5%) scale(1.08);
+  }
+}
+
+/* Le trait des monuments tunisiens, repris de l'affiche. */
+
+.lieu__skyline {
+  margin-top: 64px;
+  padding: 0 24px;
+}
+
+.lieu__skyline img {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: auto;
+  mix-blend-mode: multiply;
+}
+
+/* ---------------------------------------------------------- réservation --- */
+
+.reserver {
+  background: var(--navy);
+  color: var(--muted-light);
+  padding: 110px 0;
+}
+
+.reserver__head {
+  display: grid;
+  grid-template-columns: 1fr 0.72fr;
+  gap: 64px;
+  align-items: end;
+  padding-bottom: 56px;
+}
+
+.reserver__head h2 {
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(32px, 4.4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  max-width: 15ch;
+}
+
+.reserver__head p {
+  margin: 22px 0 0;
+  font-size: 16.5px;
+  line-height: 1.7;
+  max-width: 52ch;
+}
+
+/* Le formulaire est une surface à part : il se pose en clair sur le bleu. */
+
+.resa {
+  background: var(--white);
+  border-radius: 6px;
+  padding: 34px 36px 36px;
+  color: var(--muted);
+}
+
+/* Étapes : la numérotation est légitime ici, c'est une vraie séquence. */
+
+.steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 0 0 34px;
+  padding: 0;
+}
+
+.steps__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 3px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.steps__item.is-done,
+.steps__item.is-current {
+  border-top-color: var(--gold);
+  color: var(--navy);
+}
+
+.steps__num {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--light);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.steps__item.is-current .steps__num {
+  background: var(--gold);
+  color: var(--white);
+}
+
+.steps__item.is-done .steps__num {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.steps__label {
+  font-weight: 600;
+}
+
+.resa__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 292px;
+  gap: 40px;
+  align-items: start;
+}
+
+.field {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  animation: stepIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.field legend,
+.field__title {
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--navy);
+  padding: 0;
+  margin: 0;
+}
+
+.field__hint {
+  margin: 10px 0 24px;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.field__note {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  background: var(--light);
+  border-inline-start: 3px solid var(--gold);
+  border-radius: var(--radius);
+  font-size: 14.5px;
+}
+
+.field__note button {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.field__error {
+  margin: 10px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #a4341f;
+}
+
+/* Choix de journées et de créneaux. */
+
+.picks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.pick {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  padding: 18px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.pick:hover {
+  border-color: var(--blue-soft);
+}
+
+.pick input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pick.is-on {
+  border-color: var(--gold);
+  background: rgba(192, 123, 27, 0.07);
+  box-shadow: inset 0 0 0 1px var(--gold);
+}
+
+.pick.is-off {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pick:has(input:focus-visible) {
+  outline: 2px solid var(--gold-line);
+  outline-offset: 3px;
+}
+
+.pick__jour {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+}
+
+.pick__date {
+  font-size: 14px;
+}
+
+.pick__places {
+  margin-top: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* Champs. */
+
+.inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.input {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.input--large {
+  grid-column: 1 / -1;
+}
+
+.input label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.input input,
+.input select {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  color: var(--navy);
+}
+
+.input input:focus,
+.input select:focus {
+  outline: 2px solid var(--gold-line);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.input input[aria-invalid="true"] {
+  border-color: #a4341f;
+}
+
+.resa__resume {
+  margin: 0;
+  padding: 20px 22px;
+  background: var(--light);
+  border-radius: var(--radius);
+  border-inline-start: 3px solid var(--gold);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--navy);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.resa__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+/* Le récapitulatif vivant, à droite. */
+
+.ticket {
+  position: sticky;
+  top: calc(var(--header-h) + 24px);
+  background: var(--navy);
+  color: var(--muted-light);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+}
+
+.ticket__kicker {
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.ticket__list {
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.ticket__list div {
+  display: grid;
+  gap: 3px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.ticket__list dt {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold-line);
+}
+
+.ticket__list dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--white);
+}
+
+.ticket__foot {
+  margin: 20px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Confirmation. */
+
+.resa--fait h3 {
+  font-size: 26px;
+  letter-spacing: -0.03em;
+}
+
+.resa--fait > p {
+  margin: 12px 0 24px;
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 62ch;
+}
+
+.resa--fait > p a {
+  color: var(--blue);
+  font-weight: 600;
+}
+
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------- footer --- */
+
+.footer {
+  background: var(--navy-deep);
+  color: var(--white);
+}
+
+.footer__rule {
+  height: 8px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--gold) 0 8px,
+    transparent 8px 16px
+  );
+  opacity: 0.85;
+}
+
+.footer__marquee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 56px 0 44px;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.footer__event {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--white);
+}
+
+.footer__when {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--muted-light);
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr 1.15fr;
+  gap: 48px;
+  padding: 56px 0;
+}
+
+.footer__logo {
+  width: 96px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 8px;
+}
+
+.footer__about p {
+  margin: 22px 0 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--muted-light);
+  max-width: 30ch;
+}
+
+.footer h4 {
+  color: var(--gold);
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  font-size: 14.5px;
+}
+
+.footer ul a:hover {
+  color: var(--gold);
+}
+
+.footer__contact li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--muted-light);
+}
+
+.footer__contact i {
+  color: var(--gold);
+  font-style: normal;
+  flex: none;
+}
+
+.footer__bottom {
+  border-top: 1px solid var(--line-dark);
+  padding: 22px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ------------------------------------------------------------ responsive --- */
+
+@media (max-width: 1080px) {
+  .lede,
+  .couches__grid,
+  .reserver__head,
+  .lieu__grid,
+  .infos {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .lede__title,
+  .couches__title,
+  .reserver__head h2 {
+    max-width: 20ch;
+  }
+
+  .couches__grid,
+  .reserver__head,
+  .lieu__grid,
+  .infos {
+    gap: 48px;
+  }
+
+  .lieu__photo {
+    max-width: 300px;
+  }
+
+  .partners {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .partner {
+    padding-inline-end: 24px;
+  }
+
+  .partner:not(:first-child) {
+    padding-inline-start: 24px;
+  }
+
+  .resa__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket {
+    position: static;
+  }
+
+  /* la coupe passe au-dessus de la légende et se resserre */
+  .couches__grid {
+    grid-template-areas: "coupe" "texte";
+  }
+
+  .couches__text {
+    grid-area: texte;
+  }
+
+  .stack {
+    grid-area: coupe;
+    --slab-w: 280px;
+    --slab-d: 196px;
+    --sep: 54px;
+    min-height: 400px;
+  }
+
+  .infos > figure {
+    position: static;
+    max-width: 440px;
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 880px) {
+  .header__nav,
+  .header__contact,
+  .header__divider,
+  .header .btn {
+    display: none;
+  }
+
+  .header__burger {
+    display: block;
+  }
+
+  .header__mobile.is-open {
+    display: flex;
+  }
+
+  .band,
+  .couches,
+  .reserver {
+    padding: 76px 0;
+  }
+
+  .lieu {
+    padding-bottom: 0;
+  }
+
+  .resa {
+    padding: 26px 20px 28px;
+  }
+
+  .steps {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .steps__label {
+    display: none;
+  }
+
+  .picks,
+  .inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .lede {
+    padding-bottom: 42px;
+  }
+
+  .split {
+    grid-template-columns: 1fr;
+  }
+
+  .split__col,
+  .split__col:not(:first-child) {
+    padding: 26px 0;
+    border-inline-start: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .split__col:last-child {
+    border-bottom: 0;
+  }
+
+  .partners {
+    grid-template-columns: 1fr;
+  }
+
+  .partner,
+  .partner:not(:first-child) {
+    padding: 30px 0;
+    border-inline-start: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .partner:last-child {
+    border-bottom: 0;
+  }
+
+  .index__row {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 8px 20px;
+    padding: 26px 0;
+  }
+
+  /* en portrait, une bande 16:7 devient un filet : on la redresse */
+  .bande,
+  .bande--large,
+  .bande--bas {
+    aspect-ratio: 4 / 3;
+    margin-top: 40px;
+  }
+
+  .bande figcaption {
+    padding: 36px 18px 16px;
+    font-size: 13.5px;
+  }
+
+  .index__note {
+    grid-column: 2;
+  }
+
+  .hero {
+    padding-top: calc(var(--header-h) + 30px);
+  }
+
+  /* en portrait le drapeau descend derrière le titre, pas derrière le chapeau */
+  .hero__flag {
+    top: 34%;
+    right: -18%;
+    width: 78vw;
+  }
+
+  /* en portrait, le cartouche se resserre pour tenir sur une ligne */
+  .hero__marks {
+    gap: 13px;
+    padding: 9px 13px;
+  }
+
+  .hero__marks img {
+    height: 32px;
+  }
+
+  .hero__marks .hero__mark-atr {
+    height: 42px;
+  }
+
+  .hero__lockup {
+    gap: 12px;
+  }
+
+  .hero__chip {
+    width: 36px;
+  }
+
+  .hero__road {
+    margin-top: 56px;
+    min-height: 300px;
+    padding-bottom: 40px;
+  }
+
+  /* en portrait, le voile devient vertical : le texte occupe toute la largeur */
+  .hero__photo img {
+    object-position: 58% 50%;
+  }
+
+  .hero__photo::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(16, 43, 78, 0.94) 0%,
+      rgba(16, 43, 78, 0.9) 46%,
+      rgba(10, 28, 51, 0.74) 74%,
+      rgba(8, 22, 40, 0.88) 100%
+    );
+  }
+
+  .hero__facts {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 0;
+  }
+
+  .hero__fact {
+    padding: 0 18px;
+  }
+
+  .hero__fact:nth-child(odd) {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .countdown {
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 0;
+  }
+
+  .countdown__cell,
+  .countdown__cell:not(:first-child) {
+    padding: 18px 16px;
+    border-inline-start: 0;
+    border-top: 1px solid var(--line-dark);
+  }
+
+  .facts__row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .stack {
+    --slab-w: 208px;
+    --slab-d: 146px;
+    --slab-t: 12px;
+    --sep: 42px;
+    min-height: 310px;
+  }
+
+  .footer__marquee .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero__actions .btn,
+  .resa__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ------------------------------------------------------------------ rtl --- */
+/*
+  La mise en page se retourne d'elle-même : les marges, bordures et
+  espacements sont en propriétés logiques. Restent trois choses qui n'ont
+  pas d'équivalent logique et qu'il faut retourner à la main : l'origine des
+  transformations, le sens du volet de « peinture », et les éléments calés
+  sur un bord précis.
+*/
+
+[dir="rtl"] {
+  /* Cairo couvre l'arabe, que DM Sans et Inter ignorent. */
+  --font-display: var(--font-cairo), "Cairo", sans-serif;
+  --font-body: var(--font-cairo), "Cairo", sans-serif;
+}
+
+/* Le geste de la page part de la droite en arabe. */
+[dir="rtl"] .split__col::before,
+[dir="rtl"] .index__row::after,
+[dir="rtl"] .hero__lane,
+[dir="rtl"] .header__progress,
+[dir="rtl"] .header__nav a::after,
+[dir="rtl"] .hero__lane::before {
+  transform-origin: right center;
+}
+
+[dir="rtl"] .split__col::before {
+  left: 0;
+  right: -1px;
+}
+
+@keyframes revealWipeRtl {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 -0.4em);
+  }
+}
+
+@keyframes heroWipeRtl {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 -0.4em);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [dir="rtl"] .reveal {
+      animation-name: revealWipeRtl;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [dir="rtl"] .hero h1 {
+    animation-name: heroWipeRtl;
+  }
+}
+
+/* Le drapeau de fond passe du côté opposé au texte. */
+[dir="rtl"] .hero__flag {
+  right: auto;
+  left: -3%;
+}
+
+/* L'interlettrage négatif dessert l'arabe, qui est une écriture liée. */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] .lede__title,
+[dir="rtl"] .couches__title,
+[dir="rtl"] .hero__tagline,
+[dir="rtl"] .footer__event {
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .hero h1 {
+  text-transform: none;
+}
+
+/* Les libellés en capitales espacées n'ont pas de sens en arabe. */
+[dir="rtl"] .strip__label,
+[dir="rtl"] .btn--sm,
+[dir="rtl"] .header__brand-text span {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Le résumé de réservation reste lu de gauche à droite : il contient des
+   adresses de courriel et des heures. */
+[dir="rtl"] .resa__resume {
+  direction: ltr;
+  text-align: start;
+}
+
+/*
+  L'arabe porte des hampes et des points plus hauts que le latin : un
+  interlignage de 1 fait chevaucher les lignes, et le fond doré du titre
+  mord sur la ligne au-dessus. On desserre.
+*/
+
+[dir="rtl"] .hero h1 {
+  /* la boîte de fond d'un mark suit les métriques de la police, pas
+     l'interlignage : Cairo demande au moins 1,5 pour ne pas mordre */
+  line-height: 1.5;
+}
+
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] .lede__title,
+[dir="rtl"] .couches__title,
+[dir="rtl"] .reserver__head h2,
+[dir="rtl"] .footer__event {
+  line-height: 1.3;
+}
+
+[dir="rtl"] .hero h1 mark {
+  padding: 0 12px;
+}
+
+[dir="rtl"] .hero__fact strong,
+[dir="rtl"] .countdown__cell strong,
+[dir="rtl"] .partner h3,
+[dir="rtl"] .index__name,
+[dir="rtl"] .facts dd strong {
+  line-height: 1.35;
+}
+
+/* En arabe, « avancer » va vers la gauche : les flèches se retournent. */
+[dir="rtl"] .btn svg,
+[dir="rtl"] .link-arrow svg,
+[dir="rtl"] .strip__link svg {
+  transform: scaleX(-1);
+}
+
+/*
+  Les mesures de texte sont exprimées en `ch`, qui se résout sur la largeur
+  du chiffre zéro. Cairo étant bien plus étroit que DM Sans, les mêmes
+  valeurs donnent en arabe des colonnes trop courtes : le titre tombait sur
+  quatre lignes au lieu de trois. On élargit pour retrouver la même mesure
+  optique qu'en français.
+*/
+
+[dir="rtl"] .hero h1 {
+  max-width: 20ch;
+}
+
+[dir="rtl"] .hero__org {
+  max-width: 74ch;
+}
+
+[dir="rtl"] .hero__lead {
+  max-width: 64ch;
+}
+
+[dir="rtl"] .hero__tagline {
+  max-width: 42ch;
+}
+
+[dir="rtl"] .lede__title,
+[dir="rtl"] .couches__title,
+[dir="rtl"] .reserver__head h2 {
+  max-width: 20ch;
+}
+
+[dir="rtl"] .lede__body p,
+[dir="rtl"] .couches__lead,
+[dir="rtl"] .lieu__text,
+[dir="rtl"] .reserver__head p {
+  max-width: 64ch;
+}
+
+[dir="rtl"] .split__col p,
+[dir="rtl"] .partner p,
+[dir="rtl"] .couches__item p,
+[dir="rtl"] .index__note {
+  max-width: 40ch;
+}
+
+/* --------------------------------------------------- menu plein écran --- */
+/*
+  Le contenu du menu dépassait le bas de l'écran sur un téléphone : la ligne
+  de dates était coupée. Il défile désormais si nécessaire, et respire moins
+  sur les écrans courts.
+*/
+
+.sheet {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sheet__nav a {
+  padding: 12px 0;
+}
+
+@media (max-height: 780px) {
+  .sheet {
+    padding-top: calc(var(--header-h) + 16px);
+    padding-bottom: 28px;
+  }
+
+  .sheet__nav a {
+    font-size: clamp(21px, 5.4vw, 27px);
+    padding: 9px 0;
+  }
+
+  .langues--liste {
+    margin-bottom: 16px;
+  }
+
+  .langues--liste .langues__choix {
+    padding: 9px 12px;
+  }
+
+  .sheet__foot p {
+    margin-top: 14px;
+    font-size: 13.5px;
+  }
+}
+
+/* ------------------------------------------------ en-tête sur mobile --- */
+/*
+  Sans `flex: none`, le bouton menu se faisait comprimer par le flex quand la
+  place manquait : son cadre tombait à 32 px pour 46 de haut, et les trois
+  barres n'étaient plus centrées dedans. En dessous de 560 px, le nom de
+  l'événement cède la place — il passait sur deux ou trois lignes et écrasait
+  la barre.
+*/
+
+@media (max-width: 880px) {
+  .header__inner {
+    gap: 14px;
+  }
+
+  .header__burger {
+    flex: none;
+  }
+
+  .header__brand {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  /*
+    Le nom de l'événement reste affiché. Pour lui faire de la place sans
+    écraser le bouton menu : marges resserrées, logo plus petit, et le
+    sélecteur de langue réduit à son drapeau — le libellé « FR » et le
+    chevron n'apprennent rien que le drapeau ne dise déjà.
+  */
+  .header__inner {
+    padding: 0 16px;
+    gap: 10px;
+  }
+
+  .header__plate {
+    width: 40px;
+    height: 40px;
+    padding: 4px;
+  }
+
+  .header__brand {
+    gap: 10px;
+  }
+
+  .header__brand-text strong {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .header__brand-text span {
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+  }
+
+  .langues__bouton {
+    gap: 0;
+    padding: 0 6px;
+  }
+
+  .langues__bouton span,
+  .langues__chevron {
+    display: none;
+  }
+
+  .langues__drapeau {
+    width: 26px;
+  }
+}
+
+/* Écrans très courts (iPhone SE et assimilés) : le menu doit tenir sans
+   défiler, sinon la ligne de dates passe sous le pli. */
+@media (max-height: 700px) {
+  .sheet {
+    padding-top: calc(var(--header-h) + 10px);
+    padding-bottom: 20px;
+  }
+
+  .sheet__nav a {
+    font-size: 19px;
+    line-height: 1.4;
+    padding: 7px 0;
+  }
+
+  .langues--liste {
+    margin-bottom: 12px;
+  }
+
+  .langues__titre {
+    margin-bottom: 6px;
+  }
+
+  .langues__rangee {
+    gap: 4px;
+  }
+
+  .langues--liste .langues__choix {
+    padding: 7px 12px;
+    font-size: 13.5px;
+  }
+
+  .sheet__foot .btn {
+    height: 44px;
+  }
+
+  .sheet__foot p {
+    margin-top: 10px;
+    font-size: 12.5px;
+  }
+}
+
+/* La bande vidéo se cadre comme les bandes photo. */
+
+.bande--video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Commandes de la vidéo : lecture/pause et son. Posées en haut, du côté
+   opposé au sens de lecture, pour ne jamais recouvrir la légende. */
+
+.videoCmd {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+
+.videoCmd__btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: var(--radius);
+  background: rgba(8, 22, 40, 0.5);
+  backdrop-filter: blur(6px);
+  color: var(--white);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.videoCmd__btn:hover {
+  background: rgba(8, 22, 40, 0.76);
+  border-color: var(--white);
+}
+
+.videoCmd__btn[aria-pressed="true"] {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+@media (max-width: 560px) {
+  .videoCmd {
+    top: 10px;
+    inset-inline-end: 10px;
+  }
+
+  .videoCmd__btn {
+    width: 36px;
+    height: 36px;
+  }
+}
