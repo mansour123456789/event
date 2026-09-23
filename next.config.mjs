@@ -20,6 +20,22 @@ const nextConfig = {
       },
     ],
   },
+
+  /*
+    Exclure les fichiers média lourds du "build trace" pour éviter
+    que Next.js ne se bloque à l'étape "Collecting build traces".
+  */
+  experimental: {
+    outputFileTracingExcludes: {
+      "*": [
+        "public/**/*.mp4",
+        "public/**/*.jpg",
+        "public/**/*.jpeg",
+        "public/**/*.png",
+        "public/**/*.webp",
+      ],
+    },
+  },
 };
 
 export default nextConfig;
